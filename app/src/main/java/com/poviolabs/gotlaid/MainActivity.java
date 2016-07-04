@@ -1,5 +1,6 @@
 package com.poviolabs.gotlaid;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -16,12 +18,17 @@ public class MainActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
 
+    private static Button gotLaidButton;
+    private static TextView letYourFriendsKnowTv;
+    private static Typeface workSansExtraBoldTypeface;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        workSansExtraBoldTypeface = Typeface.createFromAsset(getAssets(), "fonts/WorkSans-ExtraBold.ttf");
 
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -32,9 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         private static final String ARG_SECTION_NUMBER = "section_number";
 
-        public PlaceholderFragment() {
-        }
-
+        public PlaceholderFragment() {}
 
         public static PlaceholderFragment newInstance(int sectionNumber) {
             PlaceholderFragment fragment = new PlaceholderFragment();
@@ -47,10 +52,26 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
+
+            int sectionNmuber = getArguments().getInt(ARG_SECTION_NUMBER);
+            switch (sectionNmuber){
+                case 0:
+                    return inflater.inflate(R.layout.fragment_main, container, false);
+                case 1:
+                    View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+                    gotLaidButton = (Button) rootView.findViewById(R.id.gotLaidButton);
+                    gotLaidButton.setTypeface(workSansExtraBoldTypeface);
+                    letYourFriendsKnowTv =  (TextView) rootView.findViewById(R.id.letYourFriendsKnowTv);
+                    letYourFriendsKnowTv.setTypeface(workSansExtraBoldTypeface);
+                    letYourFriendsKnowTv.setText(
+                            getResources().getQuantityString(R.plurals.let_friends_know, 345, 345));
+                    return rootView;
+                case 2:
+                    return inflater.inflate(R.layout.fragment_main, container, false);
+                default:
+                    return inflater.inflate(R.layout.fragment_main, container, false);
+            }
+
         }
     }
 
@@ -62,25 +83,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return PlaceholderFragment.newInstance(position + 1);
+            return PlaceholderFragment.newInstance(position);
         }
 
         @Override
         public int getCount() {
             return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "SECTION 1";
-                case 1:
-                    return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
-            }
-            return null;
         }
     }
 }

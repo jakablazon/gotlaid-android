@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Gotlaid</string>
-    <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="i_just_got_laid">I just got laid</string>
+    <plurals name="let_friends_know">
+        <item quantity="one">LET YOUR FRIEND KNOW</item>
+        <item quantity="other">LET %1$d OF YOUR FRIENDS KNOW</item>
+    </plurals>
 </resources>
