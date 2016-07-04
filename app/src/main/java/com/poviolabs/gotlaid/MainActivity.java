@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setCurrentItem(1);
     }
 
 
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             int sectionNmuber = getArguments().getInt(ARG_SECTION_NUMBER);
             switch (sectionNmuber){
                 case 0:
-                    return inflater.inflate(R.layout.fragment_main, container, false);
+                    return inflater.inflate(R.layout.fragment_friends_list, container, false);
                 case 1:
                     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
                     gotLaidButton = (Button) rootView.findViewById(R.id.gotLaidButton);
@@ -66,10 +67,8 @@ public class MainActivity extends AppCompatActivity {
                     letYourFriendsKnowTv.setText(
                             getResources().getQuantityString(R.plurals.let_friends_know, 345, 345));
                     return rootView;
-                case 2:
-                    return inflater.inflate(R.layout.fragment_main, container, false);
                 default:
-                    return inflater.inflate(R.layout.fragment_main, container, false);
+                    return inflater.inflate(R.layout.fragment_history, container, false);
             }
 
         }
