@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.poviolabs.gotlaid.MainActivity">
+    tools:context="com.gotlaid.android.MainActivity">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/container"
