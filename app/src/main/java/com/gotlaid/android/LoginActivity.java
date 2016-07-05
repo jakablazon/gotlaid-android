@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private static CallbackManager mCallbackManager;
     private static final List<String> permissionNeeds =
-            Arrays.asList("email", "public_profile", "user_friends", "read_custom_friendlists");
+            Arrays.asList("email", "public_profile", "user_friends");
     private static LoginManager mLoginMgr;
 
     private FirebaseAuth mAuth;
