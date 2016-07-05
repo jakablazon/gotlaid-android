@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "890057119724",
+    "firebase_url": "https://gotlaid-152e1.firebaseio.com",
+    "project_id": "gotlaid-152e1",
+    "storage_bucket": "gotlaid-152e1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:890057119724:android:27a026e0dfb3ac9d",
+        "android_client_info": {
+          "package_name": "com.gotlaid.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "890057119724-lp4i2khgvi35jio38v5spemhscth21r5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7KY7p3mxVTl9C7JjTv7n0OQdC9MqsTA8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
