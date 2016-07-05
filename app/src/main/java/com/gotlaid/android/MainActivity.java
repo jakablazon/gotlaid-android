@@ -13,9 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private static Button gotLaidButton;
     private static TextView letYourFriendsKnowTv;
     private static Typeface workSansExtraBoldTypeface;
+    private static AccessToken fbAccessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,22 +41,37 @@ public class MainActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
 
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        workSansExtraBoldTypeface = Typeface.createFromAsset(getAssets(), "fonts/WorkSans-ExtraBold.ttf");
-
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setCurrentItem(1);
-
-
+        //check for firebase and fb user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            Toast.makeText(getApplicationContext(), user.getDisplayName(),
-                    Toast.LENGTH_SHORT).show();
+        fbAccessToken = AccessToken.getCurrentAccessToken();
+        if (user != null && fbAccessToken != null) {
+            mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+            workSansExtraBoldTypeface = Typeface.createFromAsset(getAssets(), "fonts/WorkSans-ExtraBold.ttf");
+
+            mViewPager = (ViewPager) findViewById(R.id.container);
+            mViewPager.setAdapter(mSectionsPagerAdapter);
+            mViewPager.setCurrentItem(1);
+
+            fillFbFriendList();
         } else {
+            //launch login activity
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             finish();
         }
+    }
+
+    private void fillFbFriendList(){
+        new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/me/friends",
+                null,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                            /* handle the result */
+                    }
+                }
+        ).executeAsync();
     }
 
 
