@@ -2,6 +2,8 @@
     <string name="app_name">Gotlaid</string>
     <string name="i_just_got_laid">I just got laid</string>
     <string name="login_with_fb">LOGIN WITH FACEBOOK</string>
+    <string name="facebook_app_id">999891733412910</string>
+    <string name="aut_failed">Authorentication failed.</string>
     <plurals name="let_friends_know">
         <item quantity="one">LET YOUR FRIEND KNOW</item>
         <item quantity="other">LET %1$d OF YOUR FRIENDS KNOW</item>

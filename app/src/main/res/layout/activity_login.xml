@@ -24,5 +24,6 @@
         android:id="@+id/fbLoginButton"
         android:textColor="@android:color/white"
         android:background="@drawable/fb_button_backgroud"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:onClick="login"/>
 </RelativeLayout>
