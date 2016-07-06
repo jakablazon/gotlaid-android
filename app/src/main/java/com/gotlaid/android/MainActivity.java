@@ -116,6 +116,9 @@ public class MainActivity extends AppCompatActivity {
                             mFriendsAdapter = FriendsListAdapter.
                                     friendsListAdapterWithMergeSelected(friends, getApplicationContext());
                             mFriendsRecyclerView.setAdapter(mFriendsAdapter);
+
+                            findViewById(R.id.friendsListProgresBar).setVisibility(View.GONE);
+                            findViewById(R.id.friendsListRecyclerViewHolder).setVisibility(View.VISIBLE);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

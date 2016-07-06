@@ -6,44 +6,64 @@
     android:background="@android:color/black"
     tools:context="com.gotlaid.android.LoginActivity">
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
-        android:layout_marginBottom="3dp"
-        android:layout_marginTop="6dp"
-        android:layout_alignParentTop="true"
-        android:textColor="@android:color/black"
-        android:text="@string/unselect_all"
-        android:textSize="34dp"
-        android:id="@+id/unselectFriendsAllButton"
-        android:onClick="unselectAll"
-        android:background="@drawable/friends_list_button_background"
-        android:textAllCaps="true"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
-        android:layout_marginBottom="3dp"
-        android:layout_marginTop="3dp"
-        android:layout_below="@+id/unselectFriendsAllButton"
-        android:textColor="@android:color/black"
-        android:text="@string/select_all"
-        android:textSize="34dp"
-        android:id="@+id/selectFriendsAllButton"
-        android:onClick="selectAll"
-        android:background="@drawable/friends_list_button_background"
-        android:textAllCaps="true"/>
-
-    <android.support.v7.widget.RecyclerView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/friendsListRecyclerView"
-        android:layout_below="@+id/selectFriendsAllButton"
-        android:clipToPadding="false"
-        android:paddingBottom="64dp"/>
+        android:id="@+id/friendsListRecyclerViewHolder"
+        android:visibility="invisible">
+
+        <Button
+            android:id="@+id/unselectFriendsAllButton"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="3dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/friends_list_button_background"
+            android:onClick="unselectAll"
+            android:text="@string/unselect_all"
+            android:textAllCaps="true"
+            android:textColor="@android:color/black"
+            android:textSize="34dp" />
+
+        <Button
+            android:id="@+id/selectFriendsAllButton"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_below="@+id/unselectFriendsAllButton"
+            android:layout_marginBottom="3dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/friends_list_button_background"
+            android:onClick="selectAll"
+            android:text="@string/select_all"
+            android:textAllCaps="true"
+            android:textColor="@android:color/black"
+            android:textSize="34dp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/friendsListRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/selectFriendsAllButton"
+            android:clipToPadding="false"
+            android:paddingBottom="64dp" />
+
+    </RelativeLayout>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/friendsListProgresBar"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@android:color/white"/>
+
 
 </RelativeLayout>
