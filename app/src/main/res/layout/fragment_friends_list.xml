@@ -6,10 +6,43 @@
     android:background="@android:color/black"
     tools:context="com.gotlaid.android.LoginActivity">
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginTop="6dp"
+        android:layout_alignParentTop="true"
+        android:textColor="@android:color/black"
+        android:text="@string/unselect_all"
+        android:textSize="34dp"
+        android:id="@+id/unselectFriendsAllButton"
+        android:onClick="unselectAll"
+        android:background="@drawable/friends_list_button_background"
+        android:textAllCaps="true"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginTop="3dp"
+        android:layout_below="@+id/unselectFriendsAllButton"
+        android:textColor="@android:color/black"
+        android:text="@string/select_all"
+        android:textSize="34dp"
+        android:id="@+id/selectFriendsAllButton"
+        android:onClick="selectAll"
+        android:background="@drawable/friends_list_button_background"
+        android:textAllCaps="true"/>
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/friendsListRecyclerView"
+        android:layout_below="@+id/selectFriendsAllButton"
         android:clipToPadding="false"
         android:paddingBottom="64dp"/>
 

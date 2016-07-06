@@ -79,7 +79,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause(){
         super.onPause();
-        mFriendsAdapter.saveSelectedIds(getApplicationContext());
+        try {
+            mFriendsAdapter.saveSelectedIds(getApplicationContext());
+        }catch (Exception e){}
+    }
+
+    public void unselectAll(View v){
+        mFriendsAdapter.unselectAll();
+    }
+
+    public void selectAll(View v){
+        mFriendsAdapter.selectAll();
     }
 
     public void fillFbFriendList() {
@@ -137,7 +147,13 @@ public class MainActivity extends AppCompatActivity {
             int sectionNmuber = getArguments().getInt(ARG_SECTION_NUMBER);
             switch (sectionNmuber) {
                 case 0:
-                    return inflater.inflate(R.layout.fragment_friends_list, container, false);
+                    View rootFriendsView =
+                            inflater.inflate(R.layout.fragment_friends_list, container, false);
+                    ((TextView) rootFriendsView.findViewById(R.id.unselectFriendsAllButton)).
+                            setTypeface(workSansExtraBoldTypeface);
+                    ((TextView) rootFriendsView.findViewById(R.id.selectFriendsAllButton)).
+                            setTypeface(workSansExtraBoldTypeface);
+                    return rootFriendsView;
                 case 1:
                     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
                     gotLaidButton = (Button) rootView.findViewById(R.id.gotLaidButton);

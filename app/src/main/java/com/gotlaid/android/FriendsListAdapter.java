@@ -71,13 +71,15 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     }
 
     public void saveSelectedIds(Context context) {
-        ArrayList<Friend> selectedFriends = new ArrayList<>();
-        for (Friend friend : friends) {
-            if (friend.selected) selectedFriends.add(friend);
-        }
-        SelectedFriendsHolder holder = new SelectedFriendsHolder(selectedFriends);
-        String json = new Gson().toJson(holder);
-        FileUtils.writeToFile("selected_friends.json", json, context);
+        try {
+            ArrayList<Friend> selectedFriends = new ArrayList<>();
+            for (Friend friend : friends) {
+                if (friend.selected) selectedFriends.add(friend);
+            }
+            SelectedFriendsHolder holder = new SelectedFriendsHolder(selectedFriends);
+            String json = new Gson().toJson(holder);
+            FileUtils.writeToFile("selected_friends.json", json, context);
+        }catch (Exception e){}
     }
 
     private static SelectedFriendsHolder getSavedSelectedIdsHolder(Context context) {
@@ -100,7 +102,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         return friends;
     }
 
-    private void selectAll(){
+    public void selectAll(){
         for (int i = 0; i < friends.size(); i++) {
             //in case not all of them are initialized (common with recycle view and huge data sets)
             try {
@@ -109,7 +111,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         }
     }
 
-    private void unselectAll(){
+    public void unselectAll(){
         for (int i = 0; i < friends.size(); i++) {
             //in case not all of them are initialized (common with recycle view and huge data sets)
             try {
@@ -138,13 +140,13 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
     private void colorAccordingToSelection(int position){
         if (friends.get(position).selected){
-            views[position].setBackgroundDrawable(new ColorDrawable(Color.BLACK));
-            textViews[position].setTextColor(Color.WHITE);
-            textViews[position].setBackgroundDrawable(new ColorDrawable(Color.BLACK));
-        }else {
             views[position].setBackgroundDrawable(new ColorDrawable(Color.WHITE));
             textViews[position].setTextColor(Color.BLACK);
             textViews[position].setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        }else {
+            views[position].setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+            textViews[position].setTextColor(Color.WHITE);
+            textViews[position].setBackgroundDrawable(new ColorDrawable(Color.BLACK));
         }
     }
 
