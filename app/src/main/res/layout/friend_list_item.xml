@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:background="@android:color/black"
+    android:layout_margin="8dp">
+
+    <TextView
+        android:id="@+id/friendDisplayNameTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_centerVertical="true"
+        android:layout_margin="8dp"
+        android:background="@android:color/black"
+        android:textColor="@android:color/white"
+        android:textSize="34dp" />
+
+</RelativeLayout>

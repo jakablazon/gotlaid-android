@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,19 +21,30 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
+    private static RecyclerView mFriendsRecyclerView;
+    private static FriendsListAdapter mFriendsAdapter;
+    private static RecyclerView.LayoutManager mLayoutManager;
 
     private static Button gotLaidButton;
     private static TextView letYourFriendsKnowTv;
-    private static Typeface workSansExtraBoldTypeface;
+    public static Typeface workSansExtraBoldTypeface;
     private static AccessToken fbAccessToken;
+    private static String fbUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +63,10 @@ public class MainActivity extends AppCompatActivity {
 
             mViewPager = (ViewPager) findViewById(R.id.container);
             mViewPager.setAdapter(mSectionsPagerAdapter);
+            mViewPager.setOffscreenPageLimit(2);
             mViewPager.setCurrentItem(1);
 
+            fbUserId = Profile.getCurrentProfile().getId();
             fillFbFriendList();
         } else {
             //launch login activity
@@ -60,7 +75,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void fillFbFriendList(){
+    //save selected friends when user leaves
+    @Override
+    protected void onPause(){
+        super.onPause();
+        mFriendsAdapter.saveSelectedIds(getApplicationContext());
+    }
+
+    public void fillFbFriendList() {
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/me/friends",
@@ -68,7 +90,25 @@ public class MainActivity extends AppCompatActivity {
                 HttpMethod.GET,
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
-                            /* handle the result */
+                        try {
+                            JSONArray data = response.getJSONObject().getJSONArray("data");
+                            ArrayList<Friend> friends = new ArrayList<>();
+                            for (int i = 0; i < data.length(); i++) {
+                                JSONObject obj = data.getJSONObject(i);
+                                friends.add(new Friend(obj.getString("name"), obj.getString("id")));
+                            }
+
+                            //initialize FriendsListAdapter
+                            mFriendsRecyclerView =
+                                    (RecyclerView) findViewById(R.id.friendsListRecyclerView);
+                            mLayoutManager = new LinearLayoutManager(MainActivity.this);
+                            mFriendsRecyclerView.setLayoutManager(mLayoutManager);
+                            mFriendsAdapter = FriendsListAdapter.
+                                    friendsListAdapterWithMergeSelected(friends, getApplicationContext());
+                            mFriendsRecyclerView.setAdapter(mFriendsAdapter);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
         ).executeAsync();
@@ -79,7 +119,8 @@ public class MainActivity extends AppCompatActivity {
 
         private static final String ARG_SECTION_NUMBER = "section_number";
 
-        public PlaceholderFragment() {}
+        public PlaceholderFragment() {
+        }
 
         public static PlaceholderFragment newInstance(int sectionNumber) {
             PlaceholderFragment fragment = new PlaceholderFragment();
@@ -94,14 +135,14 @@ public class MainActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
 
             int sectionNmuber = getArguments().getInt(ARG_SECTION_NUMBER);
-            switch (sectionNmuber){
+            switch (sectionNmuber) {
                 case 0:
                     return inflater.inflate(R.layout.fragment_friends_list, container, false);
                 case 1:
                     View rootView = inflater.inflate(R.layout.fragment_main, container, false);
                     gotLaidButton = (Button) rootView.findViewById(R.id.gotLaidButton);
                     gotLaidButton.setTypeface(workSansExtraBoldTypeface);
-                    letYourFriendsKnowTv =  (TextView) rootView.findViewById(R.id.letYourFriendsKnowTv);
+                    letYourFriendsKnowTv = (TextView) rootView.findViewById(R.id.letYourFriendsKnowTv);
                     letYourFriendsKnowTv.setTypeface(workSansExtraBoldTypeface);
                     letYourFriendsKnowTv.setText(
                             getResources().getQuantityString(R.plurals.let_friends_know, 345, 345));
