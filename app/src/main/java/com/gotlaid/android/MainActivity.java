@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause(){
         super.onPause();
         try {
-            mFriendsAdapter.saveSelectedIds(getApplicationContext());
+            mFriendsAdapter.saveUnselectedIds(getApplicationContext());
         }catch (Exception e){}
     }
 
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                             mLayoutManager = new LinearLayoutManager(MainActivity.this);
                             mFriendsRecyclerView.setLayoutManager(mLayoutManager);
                             mFriendsAdapter = FriendsListAdapter.
-                                    friendsListAdapterWithMergeSelected(friends, getApplicationContext());
+                                    friendsListAdapterWithMergeUnselected(friends, getApplicationContext());
                             mFriendsRecyclerView.setAdapter(mFriendsAdapter);
 
                             findViewById(R.id.friendsListProgresBar).setVisibility(View.GONE);

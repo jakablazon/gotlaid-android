@@ -30,10 +30,10 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         textViews = new TextView[friends.size()];
     }
 
-    public static FriendsListAdapter friendsListAdapterWithMergeSelected(ArrayList<Friend> friends,
-                                                                         Context context) {
-        SelectedFriendsHolder selectedFriendsHolder = getSavedSelectedIdsHolder(context);
-        ArrayList<Friend> merged = mergeFriendsWithSelected(friends, selectedFriendsHolder);
+    public static FriendsListAdapter friendsListAdapterWithMergeUnselected(ArrayList<Friend> friends,
+                                                                           Context context) {
+        UnselectedFriendsHolder unselectedFriendsHolder = getSavedUnselectedIdsHolder(context);
+        ArrayList<Friend> merged = mergeFriendsWithUnselected(friends, unselectedFriendsHolder);
         return new FriendsListAdapter(merged);
     }
 
@@ -70,33 +70,33 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         return friends.get(position);
     }
 
-    public void saveSelectedIds(Context context) {
+    public void saveUnselectedIds(Context context) {
         try {
-            ArrayList<Friend> selectedFriends = new ArrayList<>();
+            ArrayList<Friend> unselectedFriends = new ArrayList<>();
             for (Friend friend : friends) {
-                if (friend.selected) selectedFriends.add(friend);
+                if (!friend.selected) unselectedFriends.add(friend);
             }
-            SelectedFriendsHolder holder = new SelectedFriendsHolder(selectedFriends);
+            UnselectedFriendsHolder holder = new UnselectedFriendsHolder(unselectedFriends);
             String json = new Gson().toJson(holder);
-            FileUtils.writeToFile("selected_friends.json", json, context);
+            FileUtils.writeToFile("unselected_friends.json", json, context);
         }catch (Exception e){}
     }
 
-    private static SelectedFriendsHolder getSavedSelectedIdsHolder(Context context) {
-        String json = FileUtils.readFile("selected_friends.json", context);
+    private static UnselectedFriendsHolder getSavedUnselectedIdsHolder(Context context) {
+        String json = FileUtils.readFile("unselected_friends.json", context);
         try {
-            return new Gson().fromJson(json, SelectedFriendsHolder.class);
+            return new Gson().fromJson(json, UnselectedFriendsHolder.class);
         } catch (Exception e) {
-            return new SelectedFriendsHolder();
+            return new UnselectedFriendsHolder();
         }
     }
 
-    public static ArrayList<Friend> mergeFriendsWithSelected(ArrayList<Friend> friends,
-                                                             SelectedFriendsHolder selectedFriends) {
-        if (selectedFriends != null &&
-                selectedFriends.friendIdsSet != null && selectedFriends.friendIdsSet.size() > 0) {
+    public static ArrayList<Friend> mergeFriendsWithUnselected(ArrayList<Friend> friends,
+                                                               UnselectedFriendsHolder unselectedFriends) {
+        if (unselectedFriends != null &&
+                unselectedFriends.friendIdsSet != null && unselectedFriends.friendIdsSet.size() > 0) {
             for (Friend friend : friends) {
-                if (selectedFriends.friendIdsSet.contains(friend.uuid)) friend.selected = true;
+                if (unselectedFriends.friendIdsSet.contains(friend.uuid)) friend.selected = false;
             }
         }
         return friends;
@@ -182,7 +182,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 class Friend {
     String displayName;
     String uuid;
-    boolean selected = false;
+    boolean selected = true;
 
     public Friend() {
     }
@@ -194,22 +194,22 @@ class Friend {
 }
 
 //temporary class to save friends lists to json
-class SelectedFriendsHolder {
+class UnselectedFriendsHolder {
     /* HashSet is implemented as binary search tree and is therefore very vast to check
      * whether a element is contained or not
      * */
     public HashSet<String> friendIdsSet = new HashSet<>();
 
-    public SelectedFriendsHolder() {
+    public UnselectedFriendsHolder() {
     }
 
-    public SelectedFriendsHolder(Friend[] selectedFriends) {
+    public UnselectedFriendsHolder(Friend[] selectedFriends) {
         for (Friend friend : selectedFriends) {
             if (friend.selected) friendIdsSet.add(friend.uuid);
         }
     }
 
-    public SelectedFriendsHolder(ArrayList<Friend> selectedFriends) {
+    public UnselectedFriendsHolder(ArrayList<Friend> selectedFriends) {
         for (Friend friend : selectedFriends) {
             if (friend.selected) friendIdsSet.add(friend.uuid);
         }
