@@ -29,6 +29,7 @@ dependencies {
     compile 'com.google.firebase:firebase-database:9.2.0'
     compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile 'com.google.code.gson:gson:2.3.1'
+    compile group: 'org.ocpsoft.prettytime', name: 'prettytime', version: '1.0.8.Final'
 }
 
 apply plugin: 'com.google.gms.google-services'

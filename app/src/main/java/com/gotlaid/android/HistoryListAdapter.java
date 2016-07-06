@@ -71,6 +71,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.textView.setText(actions.get(position).user_display_name);
+        holder.textView.setTypeface(MainActivity.workSansExtraBoldTypeface);
+        holder.textView.setText(actions.get(position).getDisplayString());
     }
 }
