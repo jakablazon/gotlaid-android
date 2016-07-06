@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -26,6 +27,9 @@ import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.gotlaid.android.data.Action;
@@ -43,7 +47,10 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private static RecyclerView mFriendsRecyclerView;
     private static FriendsListAdapter mFriendsAdapter;
-    private static RecyclerView.LayoutManager mLayoutManager;
+    private static RecyclerView.LayoutManager mFriendsLayoutManager;
+    private static RecyclerView mHistoryRecyclerView;
+    private static HistoryListAdapter mHistoryAdapter;
+    private static RecyclerView.LayoutManager mHistoryLayoutManager;
 
     private static Button gotLaidButton;
     private static TextView letYourFriendsKnowTv;
@@ -78,6 +85,13 @@ public class MainActivity extends AppCompatActivity {
             fbUserDisplayName = Profile.getCurrentProfile().getName();
             fbUserFirstName = Profile.getCurrentProfile().getFirstName();
             fillFbFriendList();
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    setHistoryList();
+                }
+            }, 100);
         } else {
             //launch login activity
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
@@ -114,6 +128,44 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void setHistoryList(){
+        mHistoryRecyclerView =
+                (RecyclerView) findViewById(R.id.historyListRecyclerView);
+        mHistoryLayoutManager = new LinearLayoutManager(MainActivity.this);
+        mHistoryRecyclerView.setLayoutManager(mHistoryLayoutManager);
+        mHistoryAdapter = new HistoryListAdapter();
+        mHistoryRecyclerView.setAdapter(mHistoryAdapter);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getInstance().getReference();
+
+        findViewById(R.id.historyListProgresBar).setVisibility(View.GONE);
+        findViewById(R.id.historyListRecyclerViewHolder).setVisibility(View.VISIBLE);
+
+        myRef.child(fbUserId).limitToLast(100).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Action action = dataSnapshot.getValue(Action.class);
+                mHistoryAdapter.addItem(0, action);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Action action = dataSnapshot.getValue(Action.class);
+                mHistoryAdapter.removeItem(action);
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
     public void fillFbFriendList() {
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
@@ -133,8 +185,8 @@ public class MainActivity extends AppCompatActivity {
                             //initialize FriendsListAdapter
                             mFriendsRecyclerView =
                                     (RecyclerView) findViewById(R.id.friendsListRecyclerView);
-                            mLayoutManager = new LinearLayoutManager(MainActivity.this);
-                            mFriendsRecyclerView.setLayoutManager(mLayoutManager);
+                            mFriendsLayoutManager = new LinearLayoutManager(MainActivity.this);
+                            mFriendsRecyclerView.setLayoutManager(mFriendsLayoutManager);
                             mFriendsAdapter = FriendsListAdapter.
                                     friendsListAdapterWithMergeUnselected(friends, getApplicationContext());
                             mFriendsRecyclerView.setAdapter(mFriendsAdapter);
@@ -189,7 +241,9 @@ public class MainActivity extends AppCompatActivity {
                             getResources().getQuantityString(R.plurals.let_friends_know, 345, 345));
                     return rootView;
                 default:
-                    return inflater.inflate(R.layout.fragment_history, container, false);
+                    final View historyRootView =  inflater.inflate(R.layout.fragment_history,
+                            container, false);
+                    return historyRootView;
             }
 
         }

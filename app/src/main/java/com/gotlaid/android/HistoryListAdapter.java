@@ -53,6 +53,13 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
         notifyItemRemoved(position);
     }
 
+    public void removeItem(Action action){
+        try {
+            int pos = actions.indexOf(action);
+            removeItem(pos);
+        }catch (Exception e){}
+    }
+
     public Action getActionAtPosition(int position) {
         return actions.get(position);
     }

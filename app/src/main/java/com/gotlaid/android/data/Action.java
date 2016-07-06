@@ -1,5 +1,6 @@
 package com.gotlaid.android.data;
 
+import com.google.firebase.database.Exclude;
 import com.gotlaid.android.MainActivity;
 import com.gotlaid.android.R;
 
@@ -34,6 +35,7 @@ public class Action {
         this.timestamp = timestamp;
     }
 
+    @Exclude
     public String getDisplayString() {
         String result = MainActivity.context.getString(R.string.got_laid, user_first_name);
         Date date = new Date((long) timestamp*1000);
