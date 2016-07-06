@@ -25,6 +25,9 @@ import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.gotlaid.android.data.Action;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     public static Typeface workSansExtraBoldTypeface;
     private static AccessToken fbAccessToken;
     private static String fbUserId;
+    private static String fbUserDisplayName;
+    private static String fbUserFirstName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
             mViewPager.setCurrentItem(1);
 
             fbUserId = Profile.getCurrentProfile().getId();
+            fbUserDisplayName = Profile.getCurrentProfile().getName();
+            fbUserFirstName = Profile.getCurrentProfile().getFirstName();
             fillFbFriendList();
         } else {
             //launch login activity
@@ -90,6 +97,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void selectAll(View v){
         mFriendsAdapter.selectAll();
+    }
+
+    public void uploadAction(View v){
+        ArrayList<Friend> selectedFriends = mFriendsAdapter.getSelectedFriends();
+        Action action = new Action(fbUserDisplayName, fbUserFirstName, fbUserId);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getInstance().getReference();
+
+        for (Friend friend : selectedFriends){
+            String key = myRef.child(friend.uuid).push().getKey();
+            myRef.child(friend.uuid).child(key).setValue(action);
+        }
     }
 
     public void fillFbFriendList() {
