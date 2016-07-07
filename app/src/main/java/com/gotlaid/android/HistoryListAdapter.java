@@ -77,8 +77,8 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
             public void run() {
                 try {
                     holder.textView.setText(action.getDisplayString());
-                    updateTimeEveryMinute(holder, action);
                 }catch (Exception e){}
+                updateTimeEveryMinute(holder, action);
             }
         }, 60000);
     }
