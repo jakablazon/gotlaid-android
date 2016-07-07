@@ -37,7 +37,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.gotlaid.android.data.Action;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -88,6 +87,12 @@ public class MainActivity extends AppCompatActivity {
             fbUserId = Profile.getCurrentProfile().getId();
             fbUserDisplayName = Profile.getCurrentProfile().getName();
             fbUserFirstName = Profile.getCurrentProfile().getFirstName();
+
+            //enable offline persistence and sync
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            DatabaseReference offlineRef = FirebaseDatabase.getInstance().getReference(fbUserId);
+            offlineRef.keepSynced(true);
+
             fillFbFriendList();
             final Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -140,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
         mHistoryAdapter = new HistoryListAdapter();
         mHistoryRecyclerView.setAdapter(mHistoryAdapter);
 
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getInstance().getReference();
 
@@ -170,41 +176,59 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void fillFbFriendList() {
-        new GraphRequest(
-                AccessToken.getCurrentAccessToken(),
-                "/me/friends",
-                null,
-                HttpMethod.GET,
-                new GraphRequest.Callback() {
-                    public void onCompleted(GraphResponse response) {
-                        try {
-                            JSONArray data = response.getJSONObject().getJSONArray("data");
-                            ArrayList<Friend> friends = new ArrayList<>();
-                            for (int i = 0; i < data.length(); i++) {
-                                JSONObject obj = data.getJSONObject(i);
-                                friends.add(new Friend(obj.getString("name"), obj.getString("id")));
+        try {
+            new GraphRequest(
+                    AccessToken.getCurrentAccessToken(),
+                    "/me/friends",
+                    null,
+                    HttpMethod.GET,
+                    new GraphRequest.Callback() {
+                        public void onCompleted(GraphResponse response) {
+                            try {
+                                JSONArray data = response.getJSONObject().getJSONArray("data");
+                                ArrayList<Friend> friends = new ArrayList<>();
+                                for (int i = 0; i < data.length(); i++) {
+                                    JSONObject obj = data.getJSONObject(i);
+                                    friends.add(new Friend(obj.getString("name"), obj.getString("id")));
+                                }
+
+                                //initialize FriendsListAdapter
+                                mFriendsRecyclerView =
+                                        (RecyclerView) findViewById(R.id.friendsListRecyclerView);
+                                mFriendsLayoutManager = new LinearLayoutManager(MainActivity.this);
+                                mFriendsRecyclerView.setLayoutManager(mFriendsLayoutManager);
+                                mFriendsAdapter = FriendsListAdapter.
+                                        friendsListAdapterWithMergeUnselected(friends, getApplicationContext());
+                                mFriendsRecyclerView.setAdapter(mFriendsAdapter);
+
+                                findViewById(R.id.friendsListProgresBar).setVisibility(View.GONE);
+                                findViewById(R.id.friendsListRecyclerViewHolder).setVisibility(View.VISIBLE);
+                                letYourFriendsKnowTv.setText(
+                                        getResources().getQuantityString(
+                                                R.plurals.let_friends_know, friends.size(), friends.size()));
+                            } catch (Exception e) {
+                                //try again in 2s
+                                final Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        fillFbFriendList();
+                                    }
+                                }, 2000);
                             }
-
-                            //initialize FriendsListAdapter
-                            mFriendsRecyclerView =
-                                    (RecyclerView) findViewById(R.id.friendsListRecyclerView);
-                            mFriendsLayoutManager = new LinearLayoutManager(MainActivity.this);
-                            mFriendsRecyclerView.setLayoutManager(mFriendsLayoutManager);
-                            mFriendsAdapter = FriendsListAdapter.
-                                    friendsListAdapterWithMergeUnselected(friends, getApplicationContext());
-                            mFriendsRecyclerView.setAdapter(mFriendsAdapter);
-
-                            findViewById(R.id.friendsListProgresBar).setVisibility(View.GONE);
-                            findViewById(R.id.friendsListRecyclerViewHolder).setVisibility(View.VISIBLE);
-                            letYourFriendsKnowTv.setText(
-                                    getResources().getQuantityString(
-                                            R.plurals.let_friends_know, friends.size(), friends.size()));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
                     }
+            ).executeAsync();
+        }catch (Exception e){
+            //try again in 2s
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    fillFbFriendList();
                 }
-        ).executeAsync();
+            }, 2000);
+        }
     }
 
 
