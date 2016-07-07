@@ -18,4 +18,8 @@
         <item quantity="one">LET YOUR FRIEND KNOW</item>
         <item quantity="other">LET %1$d OF YOUR FRIENDS KNOW</item>
     </plurals>
+    <plurals name="friends_notified">
+        <item quantity="one">FRIEND NOTIFIED</item>
+        <item quantity="other">%1$d FRIENDS  NOTIFIED</item>
+    </plurals>
 </resources>

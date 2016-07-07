@@ -95,9 +95,11 @@ public class MainActivity extends AppCompatActivity {
             fbUserFirstName = Profile.getCurrentProfile().getFirstName();
 
             //enable offline persistence and sync
-            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-            DatabaseReference offlineRef = FirebaseDatabase.getInstance().getReference(fbUserId);
-            offlineRef.keepSynced(true);
+            try {
+                FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+                DatabaseReference offlineRef = FirebaseDatabase.getInstance().getReference(fbUserId);
+                offlineRef.keepSynced(true);
+            }catch (Exception e){}
 
             fillFbFriendList();
             final Handler handler = new Handler();
@@ -138,10 +140,15 @@ public class MainActivity extends AppCompatActivity {
     public void uploadAction(View v){
         switch (buttonState){
             case 0:
-                gotLaidButton.setText(getString(R.string.you_sure).replace(" ", "\n"));
-                gotLaidButton.setTextColor(Color.WHITE);
-                gotLaidButton.setBackgroundResource(R.drawable.circle_black);
-                buttonState = 1;
+                if (mFriendsAdapter.getSelectedFriends().size() > 0) {
+                    gotLaidButton.setText(getString(R.string.you_sure).replace(" ", "\n"));
+                    buttonState = 1;
+                }else {
+                    gotLaidButton.setText(getString(R.string.i_just_got_laid));
+                    buttonState = 0;
+                    mViewPager.setCurrentItem(0);
+                    Snackbar.make(coordinatorLayout, R.string.select_friend, Snackbar.LENGTH_LONG).show();
+                }
                 break;
             case 1:
                 try {
@@ -155,24 +162,27 @@ public class MainActivity extends AppCompatActivity {
                             String key = myRef.child(friend.uuid).push().getKey();
                             myRef.child(friend.uuid).child(key).setValue(action);
                         }
-                        gotLaidButton.setText(getString(R.string.whoop));
-                        gotLaidButton.setTextColor(Color.BLACK);
-                        gotLaidButton.setBackgroundResource(R.drawable.circle_white);
+                        gotLaidButton.setVisibility(View.GONE);
                         buttonState = 2;
+                        ((TextView) findViewById(R.id.whoopTv)).setTypeface(workSansExtraBoldTypeface);
+                        letYourFriendsKnowTv.setText(
+                                getResources().getQuantityString(R.plurals.friends_notified,
+                                        selectedFriends.size(), selectedFriends.size()));
                         final Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 gotLaidButton.setText(getString(R.string.i_just_got_laid));
-                                gotLaidButton.setTextColor(Color.WHITE);
-                                gotLaidButton.setBackgroundResource(R.drawable.circle_black);
+                                gotLaidButton.setVisibility(View.VISIBLE);
+                                int number = mFriendsAdapter.getSelectedFriends().size();
+                                letYourFriendsKnowTv.setText(
+                                        getResources().getQuantityString(R.plurals.let_friends_know,
+                                                number, number));
                                 buttonState = 0;
                             }
-                        }, 2000);
+                        }, 3000);
                     }else {
                         gotLaidButton.setText(getString(R.string.i_just_got_laid));
-                        gotLaidButton.setTextColor(Color.WHITE);
-                        gotLaidButton.setBackgroundResource(R.drawable.circle_black);
                         buttonState = 0;
                         mViewPager.setCurrentItem(0);
                         Snackbar.make(coordinatorLayout, R.string.select_friend, Snackbar.LENGTH_LONG).show();
