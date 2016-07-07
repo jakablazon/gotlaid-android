@@ -106,6 +106,7 @@ public class LoginActivity extends AppCompatActivity {
     public void login(View v){
         mCallbackManager = CallbackManager.Factory.create();
         mLoginMgr = LoginManager.getInstance();
+        loginWithFbButton.setVisibility(View.GONE);
         mLoginMgr.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -113,9 +114,14 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancel() {}
+            public void onCancel() {
+                loginWithFbButton.setVisibility(View.VISIBLE);
+            }
+
             @Override
-            public void onError(FacebookException error) {}
+            public void onError(FacebookException error) {
+                loginWithFbButton.setVisibility(View.VISIBLE);
+            }
         });
 
         mLoginMgr.logInWithReadPermissions(this, permissionNeeds);
