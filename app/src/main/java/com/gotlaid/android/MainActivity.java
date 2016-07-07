@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     public static RecyclerView mHistoryRecyclerView;
     private static HistoryListAdapter mHistoryAdapter;
     private static RecyclerView.LayoutManager mHistoryLayoutManager;
+    private static CoordinatorLayout coordinatorLayout;
 
     private static Button gotLaidButton;
     private static ProgressBar historyListProgresBar;
@@ -68,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content);
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
@@ -126,14 +130,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void uploadAction(View v){
-        ArrayList<Friend> selectedFriends = mFriendsAdapter.getSelectedFriends();
-        Action action = new Action(fbUserDisplayName, fbUserFirstName, fbUserId);
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getInstance().getReference();
+        try {
+            ArrayList<Friend> selectedFriends = mFriendsAdapter.getSelectedFriends();
+            if (selectedFriends.size() > 0) {
+                Action action = new Action(fbUserDisplayName, fbUserFirstName, fbUserId);
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getInstance().getReference();
 
-        for (Friend friend : selectedFriends){
-            String key = myRef.child(friend.uuid).push().getKey();
-            myRef.child(friend.uuid).child(key).setValue(action);
+                for (Friend friend : selectedFriends) {
+                    String key = myRef.child(friend.uuid).push().getKey();
+                    myRef.child(friend.uuid).child(key).setValue(action);
+                }
+            }else {
+                mViewPager.setCurrentItem(0);
+                Snackbar.make(coordinatorLayout, R.string.select_friend, Snackbar.LENGTH_LONG).show();
+            }
+        }catch (Exception e){
+            Snackbar.make(coordinatorLayout, R.string.no_friends_found, Snackbar.LENGTH_LONG).show();
         }
     }
 

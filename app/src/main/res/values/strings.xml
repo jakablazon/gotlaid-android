@@ -9,6 +9,8 @@
     <string name="got_laid">%1$s got laid! </string>
     <string name="ok">ok</string>
     <string name="no_internet_connection">No internet connection</string>
+    <string name="no_friends_found">No friends found.</string>
+    <string name="select_friend">Select at least one friend.</string>
     <plurals name="let_friends_know">
         <item quantity="one">LET YOUR FRIEND KNOW</item>
         <item quantity="other">LET %1$d OF YOUR FRIENDS KNOW</item>
