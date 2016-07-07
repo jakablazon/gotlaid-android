@@ -2,6 +2,7 @@ package com.gotlaid.android;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private static String fbUserId;
     private static String fbUserDisplayName;
     private static String fbUserFirstName;
+    private static int buttonState = 0; //states of button: "click", "sure?", "notified"
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,24 +136,57 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void uploadAction(View v){
-        try {
-            ArrayList<Friend> selectedFriends = mFriendsAdapter.getSelectedFriends();
-            if (selectedFriends.size() > 0) {
-                Action action = new Action(fbUserDisplayName, fbUserFirstName, fbUserId);
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getInstance().getReference();
+        switch (buttonState){
+            case 0:
+                gotLaidButton.setText(getString(R.string.you_sure).replace(" ", "\n"));
+                gotLaidButton.setTextColor(Color.WHITE);
+                gotLaidButton.setBackgroundResource(R.drawable.circle_black);
+                buttonState = 1;
+                break;
+            case 1:
+                try {
+                    ArrayList<Friend> selectedFriends = mFriendsAdapter.getSelectedFriends();
+                    if (selectedFriends.size() > 0) {
+                        Action action = new Action(fbUserDisplayName, fbUserFirstName, fbUserId);
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef = database.getInstance().getReference();
 
-                for (Friend friend : selectedFriends) {
-                    String key = myRef.child(friend.uuid).push().getKey();
-                    myRef.child(friend.uuid).child(key).setValue(action);
+                        for (Friend friend : selectedFriends) {
+                            String key = myRef.child(friend.uuid).push().getKey();
+                            myRef.child(friend.uuid).child(key).setValue(action);
+                        }
+                        gotLaidButton.setText(getString(R.string.whoop));
+                        gotLaidButton.setTextColor(Color.BLACK);
+                        gotLaidButton.setBackgroundResource(R.drawable.circle_white);
+                        buttonState = 2;
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                gotLaidButton.setText(getString(R.string.i_just_got_laid));
+                                gotLaidButton.setTextColor(Color.WHITE);
+                                gotLaidButton.setBackgroundResource(R.drawable.circle_black);
+                                buttonState = 0;
+                            }
+                        }, 2000);
+                    }else {
+                        gotLaidButton.setText(getString(R.string.i_just_got_laid));
+                        gotLaidButton.setTextColor(Color.WHITE);
+                        gotLaidButton.setBackgroundResource(R.drawable.circle_black);
+                        buttonState = 0;
+                        mViewPager.setCurrentItem(0);
+                        Snackbar.make(coordinatorLayout, R.string.select_friend, Snackbar.LENGTH_LONG).show();
+                    }
+                }catch (Exception e){
+                    Snackbar.make(coordinatorLayout, R.string.no_friends_found, Snackbar.LENGTH_LONG).show();
+                    gotLaidButton.setText(getString(R.string.i_just_got_laid));
+                    gotLaidButton.setTextColor(Color.WHITE);
+                    gotLaidButton.setBackgroundResource(R.drawable.circle_black);
+                    buttonState = 0;
                 }
-            }else {
-                mViewPager.setCurrentItem(0);
-                Snackbar.make(coordinatorLayout, R.string.select_friend, Snackbar.LENGTH_LONG).show();
-            }
-        }catch (Exception e){
-            Snackbar.make(coordinatorLayout, R.string.no_friends_found, Snackbar.LENGTH_LONG).show();
+                break;
         }
+
     }
 
     public void setHistoryList(){
