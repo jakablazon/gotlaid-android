@@ -12,6 +12,7 @@
     <string name="no_friends_found">No friends found.</string>
     <string name="select_friend">Select at least one friend.</string>
     <plurals name="let_friends_know">
+        <item quantity="zero">DON\'T LET ANYBODY KNOW</item>
         <item quantity="one">LET YOUR FRIEND KNOW</item>
         <item quantity="other">LET %1$d OF YOUR FRIENDS KNOW</item>
     </plurals>

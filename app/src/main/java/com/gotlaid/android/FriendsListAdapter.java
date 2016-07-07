@@ -173,6 +173,9 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             public void onClick(View v) {
                 //toggle selected
                 toggle(position);
+                int number = getSelectedFriends().size();
+                MainActivity.letYourFriendsKnowTv.setText(MainActivity.context.getResources()
+                        .getQuantityString(R.plurals.let_friends_know, number, number));
             }
         });
         colorAccordingToSelection(position);

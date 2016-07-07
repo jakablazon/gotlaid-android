@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private static Button gotLaidButton;
     private static ProgressBar historyListProgresBar;
     private static RelativeLayout historyListRecyclerViewHolder;
-    private static TextView letYourFriendsKnowTv;
+    public static TextView letYourFriendsKnowTv;
     public static Typeface workSansExtraBoldTypeface;
     private static AccessToken fbAccessToken;
     private static String fbUserId;
@@ -123,10 +123,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void unselectAll(View v){
         mFriendsAdapter.unselectAll();
+        int number = mFriendsAdapter.getSelectedFriends().size();
+        getResources().getQuantityString(R.plurals.let_friends_know, number, number);
     }
 
     public void selectAll(View v){
         mFriendsAdapter.selectAll();
+        int number = mFriendsAdapter.getSelectedFriends().size();
+        getResources().getQuantityString(R.plurals.let_friends_know, number, number);
     }
 
     public void uploadAction(View v){
