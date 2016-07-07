@@ -7,6 +7,8 @@
     <string name="unselect_all">unselect all</string>
     <string name="select_all">select all</string>
     <string name="got_laid">%1$s got laid! </string>
+    <string name="ok">ok</string>
+    <string name="no_internet_connection">No internet connection</string>
     <plurals name="let_friends_know">
         <item quantity="one">LET YOUR FRIEND KNOW</item>
         <item quantity="other">LET %1$d OF YOUR FRIENDS KNOW</item>
