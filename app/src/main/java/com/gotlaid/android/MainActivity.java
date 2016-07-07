@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private static RecyclerView mFriendsRecyclerView;
     private static FriendsListAdapter mFriendsAdapter;
     private static RecyclerView.LayoutManager mFriendsLayoutManager;
-    private static RecyclerView mHistoryRecyclerView;
+    public static RecyclerView mHistoryRecyclerView;
     private static HistoryListAdapter mHistoryAdapter;
     private static RecyclerView.LayoutManager mHistoryLayoutManager;
 

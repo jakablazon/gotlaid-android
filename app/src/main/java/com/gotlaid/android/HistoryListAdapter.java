@@ -1,6 +1,7 @@
 package com.gotlaid.android;
 
 import android.os.Handler;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,14 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
     public void addItem(int position, Action action) {
         actions.add(position, action);
         notifyItemInserted(position);
+
+        //animation to show new item
+        if (position == 0){
+            try {
+                ((LinearLayoutManager) MainActivity.mHistoryRecyclerView.getLayoutManager())
+                        .scrollToPositionWithOffset(position, 0);
+            }catch (Exception e){}
+        }
     }
 
     public void addItem(Action action) {
