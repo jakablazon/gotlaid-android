@@ -142,6 +142,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (!task.isSuccessful()) {
                             Toast.makeText(LoginActivity.this, getString(R.string.aut_failed),
                                     Toast.LENGTH_SHORT).show();
+                            loginWithFbButton.setVisibility(View.VISIBLE);
                         }
                     }
                 });
