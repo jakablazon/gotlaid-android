@@ -16,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
@@ -53,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private static RecyclerView.LayoutManager mHistoryLayoutManager;
 
     private static Button gotLaidButton;
+    private static ProgressBar historyListProgresBar;
+    private static RelativeLayout historyListRecyclerViewHolder;
     private static TextView letYourFriendsKnowTv;
     public static Typeface workSansExtraBoldTypeface;
     private static AccessToken fbAccessToken;
@@ -139,14 +143,13 @@ public class MainActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getInstance().getReference();
 
-        findViewById(R.id.historyListProgresBar).setVisibility(View.GONE);
-        findViewById(R.id.historyListRecyclerViewHolder).setVisibility(View.VISIBLE);
-
         myRef.child(fbUserId).limitToLast(100).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Action action = dataSnapshot.getValue(Action.class);
                 mHistoryAdapter.addItem(0, action);
+                historyListProgresBar.setVisibility(View.GONE);
+                historyListRecyclerViewHolder.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -193,6 +196,9 @@ public class MainActivity extends AppCompatActivity {
 
                             findViewById(R.id.friendsListProgresBar).setVisibility(View.GONE);
                             findViewById(R.id.friendsListRecyclerViewHolder).setVisibility(View.VISIBLE);
+                            letYourFriendsKnowTv.setText(
+                                    getResources().getQuantityString(
+                                            R.plurals.let_friends_know, friends.size(), friends.size()));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -237,12 +243,14 @@ public class MainActivity extends AppCompatActivity {
                     gotLaidButton.setTypeface(workSansExtraBoldTypeface);
                     letYourFriendsKnowTv = (TextView) rootView.findViewById(R.id.letYourFriendsKnowTv);
                     letYourFriendsKnowTv.setTypeface(workSansExtraBoldTypeface);
-                    letYourFriendsKnowTv.setText(
-                            getResources().getQuantityString(R.plurals.let_friends_know, 345, 345));
                     return rootView;
                 default:
                     final View historyRootView =  inflater.inflate(R.layout.fragment_history,
                             container, false);
+                    historyListRecyclerViewHolder = (RelativeLayout)
+                            historyRootView.findViewById(R.id.historyListRecyclerViewHolder);
+                    historyListProgresBar =
+                            (ProgressBar) historyRootView.findViewById(R.id.historyListProgresBar);
                     return historyRootView;
             }
 

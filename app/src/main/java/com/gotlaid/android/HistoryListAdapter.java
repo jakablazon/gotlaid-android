@@ -1,5 +1,6 @@
 package com.gotlaid.android;
 
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,6 +61,19 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
         }catch (Exception e){}
     }
 
+    public void updateTimeEveryMinute(final ViewHolder holder, final Action action){
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    holder.textView.setText(action.getDisplayString());
+                    updateTimeEveryMinute(holder, action);
+                }catch (Exception e){}
+            }
+        }, 60000);
+    }
+
     public Action getActionAtPosition(int position) {
         return actions.get(position);
     }
@@ -80,5 +94,6 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.textView.setTypeface(MainActivity.workSansExtraBoldTypeface);
         holder.textView.setText(actions.get(position).getDisplayString());
+        updateTimeEveryMinute(holder, actions.get(position));
     }
 }
