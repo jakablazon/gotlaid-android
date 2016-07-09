@@ -79,7 +79,9 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             UnselectedFriendsHolder holder = new UnselectedFriendsHolder(unselectedFriends);
             String json = new Gson().toJson(holder);
             FileUtils.writeToFile("unselected_friends.json", json, context);
-        }catch (Exception e){}
+        }catch (Exception e){
+            System.out.println();
+        }
     }
 
     private static UnselectedFriendsHolder getSavedUnselectedIdsHolder(Context context) {
@@ -206,15 +208,15 @@ class UnselectedFriendsHolder {
     public UnselectedFriendsHolder() {
     }
 
-    public UnselectedFriendsHolder(Friend[] selectedFriends) {
-        for (Friend friend : selectedFriends) {
-            if (friend.selected) friendIdsSet.add(friend.uuid);
+    public UnselectedFriendsHolder(Friend[] unselectedFriends) {
+        for (Friend friend : unselectedFriends) {
+            friendIdsSet.add(friend.uuid);
         }
     }
 
-    public UnselectedFriendsHolder(ArrayList<Friend> selectedFriends) {
-        for (Friend friend : selectedFriends) {
-            if (friend.selected) friendIdsSet.add(friend.uuid);
+    public UnselectedFriendsHolder(ArrayList<Friend> unselectedFriends) {
+        for (Friend friend : unselectedFriends) {
+            friendIdsSet.add(friend.uuid);
         }
     }
 }
