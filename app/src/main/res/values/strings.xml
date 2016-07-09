@@ -20,6 +20,6 @@
     </plurals>
     <plurals name="friends_notified">
         <item quantity="one">FRIEND NOTIFIED</item>
-        <item quantity="other">%1$d FRIENDS  NOTIFIED</item>
+        <item quantity="other">%1$d FRIENDS NOTIFIED</item>
     </plurals>
 </resources>
